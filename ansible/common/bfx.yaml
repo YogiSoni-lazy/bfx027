@@ -1,0 +1,64 @@
+---
+- name: AAP Breakfix3
+  hosts: localhost
+  gather_facts: false
+  vars:
+    aap_username: "admin"
+      #aap_password: "replace-above-password"
+    exec_node_root_password: "redhat"
+  tasks:
+    - name: Capture controller creds
+      command: cat /tmp/password
+      register: pass_output
+    - name: Set a fact based on password output
+      set_fact:
+        aap_password: "{{ pass_output.stdout }}"
+    - name: Create an instance on AAP Controller
+      awx.awx.instance:
+        controller_host: "{{ groups['controller'][0] }}"
+        controller_username: "{{ aap_username }}"
+        controller_password: "{{ aap_password }}"
+        hostname: "{{ groups['exec_node'][0] }}"
+        node_type: execution
+        listener_port: 27199
+        managed_by_policy: true
+        enabled: true
+        validate_certs: false
+    - name: Find execution node instance ID
+      ansible.builtin.uri:
+        url: https://{{ groups['controller'][0] }}/api/v2/instances/{{ groups['exec_node'][0] }}/
+        user: "{{ aap_username }}"
+        password: "{{ aap_password }}"
+        force_basic_auth: true
+        return_content: true
+        validate_certs: false
+      register: instance
+    - name: Download the installer bundle for execution node
+      ansible.builtin.get_url:
+        url: https://{{ groups['controller'][0] }}/api/v2/instances/{{ instance['json']['id']|int }}/install_bundle/
+        dest: /tmp/
+        url_username: "{{ aap_username }}"
+        url_password: "{{ aap_password }}"
+        force_basic_auth: true
+        validate_certs: false
+    - name: Extract the setup archive
+      ansible.builtin.unarchive:
+        src: /tmp/{{ groups['exec_node'][0] }}_install_bundle.tar.gz
+        dest: /tmp/
+    - name: Replace inventory yaml file
+      ansible.builtin.template:
+        src: inventory.yml
+        dest: /tmp/{{ groups['exec_node'][0] }}_install_bundle/inventory.yml
+    - name: Run the execution node setup playbook
+      ansible.builtin.command: ansible-playbook install_receptor.yml
+      args:
+        chdir: /tmp/{{ groups['exec_node'][0] }}_install_bundle
+    - name: Run a health check
+      ansible.builtin.uri:
+        url: https://{{ groups['controller'][0] }}/api/v2/instances/{{ instance['json']['id']|int }}/health_check/
+        user: "{{ aap_username }}"
+        password: "{{ aap_password }}"
+        force_basic_auth: true
+        method: POST
+        validate_certs: false
+

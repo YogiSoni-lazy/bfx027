@@ -1,0 +1,1 @@
+{"event": "verbose", "uuid": "6fb8d4f3-82ff-4902-935c-cf7d41ba26c6", "counter": 1, "stdout": "\u001b[0;31mERROR! the playbook: common/bfx.yaml could not be found\u001b[0m", "start_line": 0, "end_line": 1, "runner_ident": "f1d31ae5-7108-4119-a432-f2b872e455c1", "created": "2024-07-09T19:25:52.786482"}
