@@ -40,14 +40,30 @@ class AapOperator(BaseLab):
     mpath = MATERIALS_PATH / "labs" / __LAB__
     NameSpace = "ansible-automation-platform"
 
+    # Initialize class
+    def __init__(self):
+        print("self-start")
+        script_path = str(MATERIALS_PATH) + "/labs/aap-operator"
+        print(script_path)
+        script_exec_cmd = "( cd "+ script_path + " || exit; " + "bash pre_setup.sh password.txt )"
+        run_command_step(
+            "Initiating set up on " + _workstation,
+            script_exec_cmd,
+            shell=True,
+            returns=0,
+            fatal=True,
+        )
+
     def start(self):
         wait_cluster_step()
-        if project_exists(self.NameSpace)[0]:
-            delete_project_step(self.NameSpace)
+        #if project_exists(self.NameSpace)[0]:
+        #    delete_project_step(self.NameSpace)
         # copy_materials_step(MATERIALS_PATH, self.__LAB__, WORKDIR)
         print(MATERIALS_PATH)
         print(WORKDIR)
-        #create_manifest_step(self.mpath / "namespace.yaml")
+        # /home/student/venvs/bfx027/lib64/python3.9/site-packages/bfx027/materials
+        #/home/student
+        create_manifest_step(self.mpath / "namespace.yaml")
         #create_manifest_step(self.mpath / "deployment.yaml")
 
 
