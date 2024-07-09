@@ -1,0 +1,8 @@
+---
+all:
+  hosts:
+    remote-execution:
+      ansible_host: idm.ocp4.example.com
+      ansible_user: root
+      ansible_password: redhat
+      ansible_ssh_private_key_file: ~/.ssh/id_rsa
