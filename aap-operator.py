@@ -69,6 +69,9 @@ class AapOperator(BaseLab):
 
     def start(self):
         wait_cluster_step()
+        pod_status_cmd = "while ! (oc get pods -n openshift-marketplace | grep -v STATUS | grep -v Running | grep -v Completed | wc -l | grep 0); do oc get pods -n openshift-marketplace | grep -v STATUS | grep -v Running | grep -v Completed; sleep 5; done"
+
+        controller_cred_cmd = "oc extract secrets/example-admin-password -n ansible-automation-platform --to=/tmp --confirm"
         if project_exists(self.NameSpace)[0]:
             delete_project_step(self.NameSpace)
         # copy_materials_step(MATERIALS_PATH, self.__LAB__, WORKDIR)
@@ -77,9 +80,19 @@ class AapOperator(BaseLab):
         # /home/student/venvs/bfx027/lib64/python3.9/site-packages/bfx027/materials
         #/home/student
         create_manifest_step(self.mpath / "operator_install.yaml")
+        run_command_step(
+            "Checking pod status in openshift-marketplace on " + _workstation,
+            pod_status_cmd,
+            shell=True,
+            returns=0,
+            fatal=True,
+        )
         create_manifest_step(self.mpath / "aap_controller.yaml")
-
-
-#ansible-galaxy collection install ansible.receptor
-#ansible-galaxy collection install awx.awx
+        run_command_step(
+            "Configuring ansible controller",
+            controller_cred_cmd,
+            shell=True,
+            returns=0,
+            fatal=True,
+        )
 

@@ -4,9 +4,17 @@
   gather_facts: false
   vars:
     aap_username: "admin"
-    aap_password: "replace-above-password"
+      #aap_password: "replace-above-password"
     exec_node_root_password: "redhat"
   tasks:
+    - name: Capture controller creds
+      command: cat /tmp/password
+      register: pass_output
+
+    - name: Set a fact based on password output
+      set_fact:
+        aap_password: "{{ pass_output.stdout }}"
+
     - name: Create an instance on AAP Controller
       awx.awx.instance:
         controller_host: "{{ groups['controller'][0] }}"
