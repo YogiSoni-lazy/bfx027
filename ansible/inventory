@@ -1,0 +1,5 @@
+[controller]
+example-ansible-automation-platform.apps.ocp4.example.com
+
+[exec_node]
+idm.ocp4.example.com
