@@ -45,16 +45,8 @@ class AapOperator(BaseLab):
     # Initialize class
     def __init__(self):
         wait_cluster_step()
-        script_exec_cmd = "( cd "+ str(self.mpath) + " || exit; " + "bash pre_setup.sh password.txt )"
         collection1_install = "ansible-galaxy collection install ansible.receptor"
         collection2_install = "( cd "+ self.apath + " || exit; " + " ansible-galaxy collection install awx.awx )"
-        run_command_step(
-            "Initiating set up on " + _workstation,
-            script_exec_cmd,
-            shell=True,
-            returns=0,
-            fatal=True,
-        )
         run_command_step(
             "Installing ansible.receptor on " + _workstation,
             collection1_install,
@@ -72,20 +64,22 @@ class AapOperator(BaseLab):
 
     def start(self):
         pod_status_cmd = "while ! (oc get pods -n openshift-marketplace | grep -v STATUS | grep -v Running | grep -v Completed | wc -l | grep 0); do oc get pods -n openshift-marketplace | grep -v STATUS | grep -v Running | grep -v Completed; sleep 5; done"
-
         controller_cred_cmd = "oc extract secrets/example-admin-password -n ansible-automation-platform --to=/tmp --confirm"
         controller_status = "while ! (oc get pods -n ansible-automation-platform | grep -i example | wc -l | grep 3); do oc get pods -n ansible-automation-platform | grep -i example; sleep 5; done"
-        print(project_exists(self.NameSpace)[0])
-        delete_project_step(self.NameSpace)
+
         if project_exists(self.NameSpace)[0]:
-            print("hit")
             delete_project_step(self.NameSpace)
-        # copy_materials_step(MATERIALS_PATH, self.__LAB__, WORKDIR)
-        #print(MATERIALS_PATH)
-        #print(WORKDIR)
-        # /home/student/venvs/bfx027/lib64/python3.9/site-packages/bfx027/materials
-        #/home/student
-        create_manifest_step(self.mpath / "operator_install.yaml")
+
+        script_exec_cmd = "( cd "+ str(self.mpath) + " || exit; " + "bash pre_setup.sh password.txt )"
+        print(self.mpath)
+        run_command_step(
+            "Initiating set up on " + _workstation,
+            script_exec_cmd,
+            shell=True,
+            returns=0,
+            fatal=True,
+        )
+
         run_command_step(
             "Checking pod status in openshift-marketplace on " + _workstation,
             pod_status_cmd,
@@ -93,6 +87,7 @@ class AapOperator(BaseLab):
             returns=0,
             fatal=True,
         )
+        create_manifest_step(self.mpath / "operator_install.yaml")
         create_manifest_step(self.mpath / "aap_controller.yaml")
         run_command_step(
             "Checking ansible controller status",
@@ -101,6 +96,7 @@ class AapOperator(BaseLab):
             returns=0,
             fatal=True,
         )
+        #create_manifest_step(self.mpath / "aap_controller.yaml")
         run_command_step(
             "Configuring ansible controller",
             controller_cred_cmd,
