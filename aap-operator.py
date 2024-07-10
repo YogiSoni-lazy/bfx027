@@ -12,7 +12,6 @@ from bfx027.common import BaseLab
 from ocpcli.health import wait_cluster_step
 from bfx027.common.constants import MATERIALS_PATH
 
-from bfx027.common.constants import WORKDIR
 from ocpcli.projects import delete_project_step, project_exists
 
 from labs.ui import GradingStep
@@ -42,8 +41,12 @@ class AapOperator(BaseLab):
     apath = str(MATERIALS_PATH).replace("materials","")
     NameSpace = "ansible-automation-platform"
 
-    # Initialize class
-    def __init__(self):
+    def start(self):
+        pod_status_cmd = "while ! (oc get pods -n openshift-marketplace | grep -v STATUS | grep -v Running | grep -v Completed | wc -l | grep 0); do oc get pods -n openshift-marketplace | grep -v STATUS | grep -v Running | grep -v Completed; sleep 5; done"
+        controller_cred_cmd = "oc extract secrets/example-admin-password -n ansible-automation-platform --to=/tmp --confirm"
+        controller_status = "while ! (oc get pods -n ansible-automation-platform | grep -i example | wc -l | grep 3); do oc get pods -n ansible-automation-platform | grep -i example; sleep 5; done"
+        crd_status_cmd = "while ! (kubectl get crd automationcontrollers.automationcontroller.ansible.com) ; do kubectl get crd automationcontrollers.automationcontroller.ansible.com; sleep 5;  done;"
+
         wait_cluster_step()
         collection1_install = "ansible-galaxy collection install ansible.receptor"
         collection2_install = "( cd "+ self.apath + " || exit; " + " ansible-galaxy collection install awx.awx )"
@@ -61,11 +64,6 @@ class AapOperator(BaseLab):
             returns=0,
             fatal=True,
         )
-
-    def start(self):
-        pod_status_cmd = "while ! (oc get pods -n openshift-marketplace | grep -v STATUS | grep -v Running | grep -v Completed | wc -l | grep 0); do oc get pods -n openshift-marketplace | grep -v STATUS | grep -v Running | grep -v Completed; sleep 5; done"
-        controller_cred_cmd = "oc extract secrets/example-admin-password -n ansible-automation-platform --to=/tmp --confirm"
-        controller_status = "while ! (oc get pods -n ansible-automation-platform | grep -i example | wc -l | grep 3); do oc get pods -n ansible-automation-platform | grep -i example; sleep 5; done"
 
         if project_exists(self.NameSpace)[0]:
             delete_project_step(self.NameSpace)
@@ -88,6 +86,14 @@ class AapOperator(BaseLab):
             fatal=True,
         )
         create_manifest_step(self.mpath / "operator_install.yaml")
+        run_command_step(
+            "Check CRD for automationcontrollers.automationcontroller.ansible.com on  " + _workstation,
+            crd_status_cmd,
+            shell=True,
+            returns=0,
+            fatal=True,
+        )
+
         create_manifest_step(self.mpath / "aap_controller.yaml")
         run_command_step(
             "Checking ansible controller status",
