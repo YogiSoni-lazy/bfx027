@@ -70,7 +70,7 @@ class AapOperator(BaseLab):
         if project_exists(self.NameSpace)[0]:
             delete_project_step(self.NameSpace)
 
-        script_exec_cmd = "( cd "+ str(self.mpath) + " || exit; " + "bash pre_setup.sh password.txt )"
+        script_exec_cmd = "( cd "+ str(self.mpath) + " || exit; " + "bash pre2.sh password.txt )"
         print(self.mpath)
         run_command_step(
             "Initiating set up on " + _workstation,

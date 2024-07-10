@@ -10,6 +10,9 @@
     - name: Capture controller creds
       command: cat /tmp/password
       register: pass_output
+    - name: display password
+      debug: 
+        msg: "{{ pass_output.stdout }}"
 
     - name: Set a fact based on password output
       set_fact:

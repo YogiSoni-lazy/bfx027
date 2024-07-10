@@ -1,0 +1,21 @@
+[1;35m[WARNING]: Skipping callback plugin 'profile_tasks', unable to load[0m
+[1;35m[WARNING]: Skipping callback plugin 'timer', unable to load[0m
+
+PLAY [AAP Breakfix3] ***********************************************************
+
+TASK [Capture controller creds] ************************************************
+[0;33mchanged: [localhost][0m
+
+TASK [display] *****************************************************************
+[0;32mok: [localhost] => {[0m
+[0;32m    "msg": "dosTMz9emaQHbKQybxeRKh1D7bvNqRQL"[0m
+[0;32m}[0m
+
+TASK [Set a fact based on password output] *************************************
+[0;32mok: [localhost][0m
+
+TASK [Create an instance on AAP Controller] ************************************
+[0;31mfatal: [localhost]: FAILED! => {"changed": false, "msg": "Failed to extract token information from login response: Expecting value: line 2 column 1 (char 1)", "response": "\n<!DOCTYPE html>\n<html lang=\"en-US\">\n   <head>\n      <title data-cy=\"migration-title\">Red Hat Ansible Automation Platform Upgrading</title>\n      <meta\n         http-equiv=\"Content-Security-Policy\"\n         content=\"default-src 'self';\n                  connect-src 'self' ws: wss:;\n                  style-src 'self' 'unsafe-inline';\n                  script-src 'self' 'nonce-FH+z7iiid0Gykffhkhm7DycYDRjRXji53kB9Q1R1f+w=' *.pendo.io;\n                  img-src 'self' *.pendo.io data:;\"\n         />\n      <meta charset=\"utf-8\">\n      <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\" />\n      <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n      <link href=\"/static/css/fonts/assets/RedHatDisplay/RedHatDisplay-Medium.woff\" rel=\"stylesheet\" type=\"application/font-woff\" media=\"all\"/>\n      <link href=\"/static/css/fonts/assets/RedHatText/RedHatText-Regular.woff\" rel=\"stylesheet\" type=\"application/font-woff\" media=\"all\"/>\n      <link href=\"/static/css/patternfly.min.css\" rel=\"stylesheet\" type=\"text/css\" media=\"all\"/>\n      <script nonce=\"FH+z7iiid0Gykffhkhm7DycYDRjRXji53kB9Q1R1f+w=\">\n         setInterval(function() {\n         window.location = '/';\n         }, 10000);\n      </script>\n   </head>\n   <body>\n      <div class=\"pf-l-bullseye pf-m-gutter\">\n         <div class=\"pf-l-bullseye__item\">\n            <div class=\"pf-l-bullseye\">\n            <img src=\"/static/media/logo-black.svg\" width=\"300px\" alt=Logo />\n            </div>\n            <div class=\"pf-l-bullseye\">\n              <span class=\"pf-c-spinner\" role=\"progressbar\" aria-valuetext=Loading>\n                <span class=\"pf-c-spinner__clipper\"></span>\n                <span class=\"pf-c-spinner__lead-ball\"></span>\n                <span class=\"pf-c-spinner__tail-ball\"></span>\n              </span>\n            </div>\n            <h2 data-cy=\"migration-message-upgrade\" class=\"pf-l-bullseye pf-c-title pf-m-2xl ws-heading ws-title ws-h2\">Red Hat Ansible Automation Platform is currently upgrading.</h2>\n            <h2 class=\"pf-l-bullseye pf-c-title pf-m-2xl ws-heading ws-title ws-h2\">This page will refresh when complete.</h2>\n         </div>\n      </div>\n   </body>\n</html>\n"}[0m
+
+PLAY RECAP *********************************************************************
+[0;31mlocalhost[0m                  : [0;32mok=3   [0m [0;33mchanged=1   [0m unreachable=0    [0;31mfailed=1   [0m skipped=0    rescued=0    ignored=0   

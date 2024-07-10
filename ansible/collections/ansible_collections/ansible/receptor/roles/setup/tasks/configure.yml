@@ -1,0 +1,24 @@
+---
+- name: Ensure soft/hard file descriptors limits
+  ansible.builtin.template:
+    src: templates/pam_limits.conf.j2
+    dest: /etc/security/limits.d/receptor.conf
+    mode: '0600'
+    owner: root
+    group: root
+
+- name: Configure the receptor socket directory
+  ansible.builtin.file:
+    path: "{{ receptor_socket_dir }}"
+    state: directory
+    owner: "{{ receptor_user }}"
+    group: "{{ receptor_group }}"
+    mode: '0750'
+
+- name: Create tmpfiles.d entry for receptor socket directory
+  ansible.builtin.template:
+    src: templates/receptor_tmpd.conf.j2
+    dest: /etc/tmpfiles.d/receptor.conf
+    mode: '0640'
+    owner: root
+    group: root

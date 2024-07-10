@@ -1,0 +1,7 @@
+system_pip_package: python39-pip
+python_executable: python3.9
+pip_executable: pip3.9
+receptor_packages:
+  - receptor
+  - receptorctl
+systemd_folder: "/usr/lib/systemd/system"
