@@ -19,6 +19,7 @@ from labs.ui import GradingStep
 
 from labs.common.steps import copy_materials_step
 
+from labs.ui.steps import ansible
 
 from labs.activities import GuidedExercise
 from labs.common.network import hosts_reachable_step
@@ -38,13 +39,15 @@ _node = "idm.ocp4.example.com"
 class AapOperator(BaseLab):
     __LAB__ = "aap-operator"
     mpath = MATERIALS_PATH / "labs" / __LAB__
+    apath = str(MATERIALS_PATH).replace("materials","")
     NameSpace = "ansible-automation-platform"
 
     # Initialize class
     def __init__(self):
+        wait_cluster_step()
         script_exec_cmd = "( cd "+ str(self.mpath) + " || exit; " + "bash pre_setup.sh password.txt )"
         collection1_install = "ansible-galaxy collection install ansible.receptor"
-        collection2_install = "ansible-galaxy collection install awx.awx"
+        collection2_install = "( cd "+ self.apath + " || exit; " + " ansible-galaxy collection install awx.awx )"
         run_command_step(
             "Initiating set up on " + _workstation,
             script_exec_cmd,
@@ -68,11 +71,14 @@ class AapOperator(BaseLab):
         )
 
     def start(self):
-        wait_cluster_step()
         pod_status_cmd = "while ! (oc get pods -n openshift-marketplace | grep -v STATUS | grep -v Running | grep -v Completed | wc -l | grep 0); do oc get pods -n openshift-marketplace | grep -v STATUS | grep -v Running | grep -v Completed; sleep 5; done"
 
         controller_cred_cmd = "oc extract secrets/example-admin-password -n ansible-automation-platform --to=/tmp --confirm"
+        controller_status = "while ! (oc get pods -n ansible-automation-platform | grep -i example | wc -l | grep 3); do oc get pods -n ansible-automation-platform | grep -i example; sleep 5; done"
+        print(project_exists(self.NameSpace)[0])
+        delete_project_step(self.NameSpace)
         if project_exists(self.NameSpace)[0]:
+            print("hit")
             delete_project_step(self.NameSpace)
         # copy_materials_step(MATERIALS_PATH, self.__LAB__, WORKDIR)
         #print(MATERIALS_PATH)
@@ -89,10 +95,22 @@ class AapOperator(BaseLab):
         )
         create_manifest_step(self.mpath / "aap_controller.yaml")
         run_command_step(
+            "Checking ansible controller status",
+            controller_status,
+            shell=True,
+            returns=0,
+            fatal=True,
+        )
+        run_command_step(
             "Configuring ansible controller",
             controller_cred_cmd,
             shell=True,
             returns=0,
             fatal=True,
+        )
+        ansible.run_playbook_step(
+           self,
+           "common/bfx.yaml",
+           step_message="Preparing the exercise on " + _workstation,
         )
 
