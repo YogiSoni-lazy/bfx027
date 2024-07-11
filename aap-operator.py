@@ -119,9 +119,9 @@ class AapOperator(BaseLab):
             returns=0,
             fatal=True,
         )
-        ansible.run_playbook_step(
-           self,
-           "common/bfx.yaml",
-           step_message="Preparing the exercise on " + _workstation,
-        )
+        #ansible.run_playbook_step(
+        #   self,
+        #   "common/bfx.yaml",
+        #   step_message="Preparing the exercise on " + _workstation,
+        #)
 

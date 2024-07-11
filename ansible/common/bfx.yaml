@@ -16,11 +16,25 @@
     - name: Set a fact based on password output
       set_fact:
         aap_password: "{{ pass_output.stdout }}"
+    - name: Attempt to get token with retries
+      uri:
+        url: https://{{ groups['controller'][0] }}
+        method: GET
+        #body: "{{ login_payload }}"
+        validate_certs: no
+      register: result
+      retries: 30
+      delay: 5
+      until: result.status == 200
+    - name: display error
+      debug:
+        msg: "{{ result }}"
     - name: Check if AAP is ready
       uri:
         url: https://{{ groups['controller'][0] }}/
         method: GET
         return_content: yes
+        validate_certs: no
       register: aap_status
       ignore_errors: yes
       until: "'Red Hat Ansible Automation Platform Upgrading' not in aap_status.content"
@@ -30,17 +44,6 @@
       fail:
         msg: "AAP is still upgrading after multiple attempts. Aborting."
       when: "'Red Hat Ansible Automation Platform Upgrading' in aap_status.content"
-    - name: Check if AAP is ready
-      uri:
-        url: https://{{ groups['controller'][0] }}/
-        method: GET
-        return_content: yes
-      register: aap_status
-      ignore_errors: yes
-      until: "'Red Hat Ansible Automation Platform Upgrading' not in aap_status.content"
-      retries: 100
-      delay: 60
-      tags: test
     - name: Create an instance on AAP Controller
       awx.awx.instance:
         controller_host: "{{ groups['controller'][0] }}"
@@ -54,13 +57,13 @@
         validate_certs: false
       register: cont_status
       ignore_errors: yes
-      until: "'HTTP Error 500: Internal Server Error' not in cont_status.content"
-      retries: 100
-      delay: 60
-      tags: test
+        #until: "'HTTP Error 500: Internal Server Error' not in cont_status.content"
+        #retries: 100
+        #delay: 60
+        #tags: test
     - name: display error
       debug:
-        msg: cont_status
+        msg: "{{ cont_status }}"
     - name: Find execution node instance ID
       ansible.builtin.uri:
         url: https://{{ groups['controller'][0] }}/api/v2/instances/{{ groups['exec_node'][0] }}/
