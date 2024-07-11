@@ -26,7 +26,7 @@
       register: aap_status
       ignore_errors: yes
       until: "'Red Hat Ansible Automation Platform Upgrading' not in aap_status.content"
-      retries: 30
+      retries: 100
       delay: 60
     - name: Fail if AAP is not ready after retries
       fail:
@@ -35,6 +35,16 @@
     - name: Pause for 3 minutes
       pause:
         minutes: 3
+    - name: Check if AAP is ready
+      uri:
+        url: "https://{{ groups['controller'][0] }}"
+        method: GET
+        return_content: yes
+      register: aap_status
+      ignore_errors: yes
+      until: "'Red Hat Ansible Automation Platform Upgrading' not in aap_status.content"
+      retries: 100
+      delay: 60
     - name: Create an instance on AAP Controller
       awx.awx.instance:
         controller_host: "{{ groups['controller'][0] }}"
@@ -85,11 +95,11 @@
         validate_certs: false
 
 - name: "Configuring IDM server"
-  hosts: idm.ocp4.example.com
+  hosts: exec_node
   tasks:
-    - command: "subscription-manager unregister"
-    - command: "subscription-manager clean"
-    - command: "yum remove -y $(rpm -qa | grep katello-ca)"
-    - command: "subscription-manager register --org=1979710 --activationkey=bfx027lab"
-    - command: "subscription-manager repos --enable ansible-automation-platform-2.4-for-rhel-9-x86_64-rpms"
+    - command: "echo student | sudo -S subscription-manager unregister"
+    - command: "echo student | sudo -S subscription-manager clean"
+    - command: "echo student | sudo -S yum remove -y $(rpm -qa | grep katello-ca)"
+    - command: "echo student | sudo -S subscription-manager register --org=1979710 --activationkey=bfx027lab"
+    - command: "echo student | sudo -S subscription-manager repos --enable ansible-automation-platform-2.4-for-rhel-9-x86_64-rpms"
 

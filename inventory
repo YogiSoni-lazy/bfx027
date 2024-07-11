@@ -1,4 +1,4 @@
 [controller]
 example-ansible-automation-platform.apps.ocp4.example.com
 [exec_node]
-idm.ocp4.example.com
+idm.ocp4.example.com ansible_user=student ansible_ssh_private_key_file=/home/student/.ssh/lab_rsa

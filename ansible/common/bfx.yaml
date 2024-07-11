@@ -40,6 +40,7 @@
       until: "'Red Hat Ansible Automation Platform Upgrading' not in aap_status.content"
       retries: 100
       delay: 60
+      tags: test
     - name: Create an instance on AAP Controller
       awx.awx.instance:
         controller_host: "{{ groups['controller'][0] }}"
@@ -51,6 +52,15 @@
         managed_by_policy: true
         enabled: true
         validate_certs: false
+      register: cont_status
+      ignore_errors: yes
+      until: "'HTTP Error 500: Internal Server Error' not in cont_status.content"
+      retries: 100
+      delay: 60
+      tags: test
+    - name: display error
+      debug:
+        msg: cont_status
     - name: Find execution node instance ID
       ansible.builtin.uri:
         url: https://{{ groups['controller'][0] }}/api/v2/instances/{{ groups['exec_node'][0] }}/
