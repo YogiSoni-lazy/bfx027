@@ -10,17 +10,15 @@
     - name: Capture controller creds
       command: cat /tmp/password
       register: pass_output
-    - name: display password
-      debug: 
+    - name: display
+      debug:
         msg: "{{ pass_output.stdout }}"
-
     - name: Set a fact based on password output
       set_fact:
         aap_password: "{{ pass_output.stdout }}"
-
     - name: Check if AAP is ready
       uri:
-        url: "https://{{ groups['controller'][0] }}"
+        url: https://{{ groups['controller'][0] }}/
         method: GET
         return_content: yes
       register: aap_status
@@ -32,12 +30,9 @@
       fail:
         msg: "AAP is still upgrading after multiple attempts. Aborting."
       when: "'Red Hat Ansible Automation Platform Upgrading' in aap_status.content"
-    - name: Pause for 3 minutes
-      pause:
-        minutes: 3
     - name: Check if AAP is ready
       uri:
-        url: "https://{{ groups['controller'][0] }}"
+        url: https://{{ groups['controller'][0] }}/
         method: GET
         return_content: yes
       register: aap_status
@@ -45,6 +40,7 @@
       until: "'Red Hat Ansible Automation Platform Upgrading' not in aap_status.content"
       retries: 100
       delay: 60
+      tags: test
     - name: Create an instance on AAP Controller
       awx.awx.instance:
         controller_host: "{{ groups['controller'][0] }}"
@@ -56,6 +52,15 @@
         managed_by_policy: true
         enabled: true
         validate_certs: false
+      register: cont_status
+      ignore_errors: yes
+        #until: "'HTTP Error 500: Internal Server Error' not in cont_status.content"
+        #retries: 100
+        #delay: 60
+        #tags: test
+    - name: display error
+      debug:
+        msg: "{{ cont_status }}"
     - name: Find execution node instance ID
       ansible.builtin.uri:
         url: https://{{ groups['controller'][0] }}/api/v2/instances/{{ groups['exec_node'][0] }}/
@@ -94,12 +99,13 @@
         method: POST
         validate_certs: false
 
-- name: "Configuring IDM server"
+- name: "IDM server settings"
   hosts: exec_node
+  gather_facts: false
+  tags: test
   tasks:
-    - command: "echo student | sudo -S subscription-manager unregister"
+    - command: "echo  student | sudo -S subscription-manager unregister"
     - command: "echo student | sudo -S subscription-manager clean"
     - command: "echo student | sudo -S yum remove -y $(rpm -qa | grep katello-ca)"
     - command: "echo student | sudo -S subscription-manager register --org=1979710 --activationkey=bfx027lab"
     - command: "echo student | sudo -S subscription-manager repos --enable ansible-automation-platform-2.4-for-rhel-9-x86_64-rpms"
-
