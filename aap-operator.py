@@ -42,7 +42,7 @@ class AapOperator(BaseLab):
     NameSpace = "ansible-automation-platform"
 
     def start(self):
-        collection_check_cmd = "while ! (ansible-galaxy info ansible.receptor); do ansible-galaxy info ansible.receptor; done;"
+        collection_check_cmd = "while ! (ansible-galaxy collection install ansible.receptor); do ansible-galaxy info ansible.receptor; done;"
         pod_status_cmd = "while ! (oc get pods -n openshift-marketplace | grep -v STATUS | grep -v Running | grep -v Completed | wc -l | grep 0); do oc get pods -n openshift-marketplace | grep -v STATUS | grep -v Running | grep -v Completed; sleep 5; done"
         controller_cred_cmd = "oc extract secrets/example-admin-password -n ansible-automation-platform --to=/tmp --confirm"
         controller_status = "while ! (oc get pods -n ansible-automation-platform | grep -i example | wc -l | grep 3); do oc get pods -n ansible-automation-platform | grep -i example; sleep 5; done"

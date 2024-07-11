@@ -1,0 +1,1 @@
+{"event": "verbose", "uuid": "7854406e-d5b7-4c56-abe0-f5f50baada7a", "counter": 38, "stdout": "\u001b[1;35m[WARNING]: You are using the awx version of this collection but connecting to\u001b[0m", "start_line": 37, "end_line": 38, "runner_ident": "1473697e-0c13-4c35-8ee2-ee003a1b67de", "created": "2024-07-11T12:40:39.806832"}
