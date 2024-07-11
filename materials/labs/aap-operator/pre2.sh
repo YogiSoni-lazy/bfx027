@@ -1,4 +1,5 @@
 #!/bin/bash
+oc login -u admin -p redhatocp https://api.ocp4.example.com:6443
 
 oc patch OperatorHub cluster --type json --patch '[{"op": "add", "path": "/spec/disableAllDefaultSources", "value": false}]';
 oc delete pod --all -n openshift-operator-lifecycle-manager;

@@ -1,0 +1,21 @@
+[1;35m[WARNING]: Skipping callback plugin 'profile_tasks', unable to load[0m
+[1;35m[WARNING]: Skipping callback plugin 'timer', unable to load[0m
+
+PLAY [AAP Breakfix3] ***********************************************************
+
+TASK [Capture controller creds] ************************************************
+[0;33mchanged: [localhost][0m
+
+TASK [display] *****************************************************************
+[0;32mok: [localhost] => {[0m
+[0;32m    "msg": "Mmq1KDduXHCLkwMR9fgNA1nqpY7OjXYO"[0m
+[0;32m}[0m
+
+TASK [Set a fact based on password output] *************************************
+[0;32mok: [localhost][0m
+
+TASK [Create an instance on AAP Controller] ************************************
+[0;31mfatal: [localhost]: FAILED! => {"changed": false, "msg": "Failed to get token: The read operation timed out"}[0m
+
+PLAY RECAP *********************************************************************
+[0;31mlocalhost[0m                  : [0;32mok=3   [0m [0;33mchanged=1   [0m unreachable=0    [0;31mfailed=1   [0m skipped=0    rescued=0    ignored=0   
