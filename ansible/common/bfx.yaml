@@ -44,6 +44,19 @@
       fail:
         msg: "AAP is still upgrading after multiple attempts. Aborting."
       when: "'Red Hat Ansible Automation Platform Upgrading' in aap_status.content"
+    - name: Attempt to get token with retries
+      uri:
+        url: https://{{ groups['controller'][0] }}
+        method: GET
+        #body: "{{ login_payload }}"
+        validate_certs: no
+      register: result
+      retries: 30
+      delay: 5
+      until: result.status == 200
+    - name: display error
+      debug:
+        msg: "{{ result }}"
     - name: Create an instance on AAP Controller
       awx.awx.instance:
         controller_host: "{{ groups['controller'][0] }}"
@@ -57,13 +70,10 @@
         validate_certs: false
       register: cont_status
       ignore_errors: yes
-        #until: "'HTTP Error 500: Internal Server Error' not in cont_status.content"
-        #retries: 100
-        #delay: 60
-        #tags: test
-    - name: display error
-      debug:
-        msg: "{{ cont_status }}"
+      until: cont_status.failed == false 
+      retries: 100
+      delay: 60
+      tags: test
     - name: Find execution node instance ID
       ansible.builtin.uri:
         url: https://{{ groups['controller'][0] }}/api/v2/instances/{{ groups['exec_node'][0] }}/
