@@ -67,3 +67,12 @@
         method: POST
         validate_certs: false
 
+- name: "Configuring IDM server"
+  hosts: idm.ocp4.example.com
+  tasks:
+    - command: "subscription-manager unregister"
+    - command: "subscription-manager clean"
+    - command: "yum remove -y $(rpm -qa | grep katello-ca)"
+    - command: "subscription-manager register --org=1979710 --activationkey=bfx027lab"
+    - command: "subscription-manager repos --enable ansible-automation-platform-2.4-for-rhel-9-x86_64-rpms"
+
