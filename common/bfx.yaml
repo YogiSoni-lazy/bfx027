@@ -18,6 +18,23 @@
       set_fact:
         aap_password: "{{ pass_output.stdout }}"
 
+    - name: Check if AAP is ready
+      uri:
+        url: "https://{{ groups['controller'][0] }}"
+        method: GET
+        return_content: yes
+      register: aap_status
+      ignore_errors: yes
+      until: "'Red Hat Ansible Automation Platform Upgrading' not in aap_status.content"
+      retries: 30
+      delay: 60
+    - name: Fail if AAP is not ready after retries
+      fail:
+        msg: "AAP is still upgrading after multiple attempts. Aborting."
+      when: "'Red Hat Ansible Automation Platform Upgrading' in aap_status.content"
+    - name: Pause for 3 minutes
+      pause:
+        minutes: 3
     - name: Create an instance on AAP Controller
       awx.awx.instance:
         controller_host: "{{ groups['controller'][0] }}"

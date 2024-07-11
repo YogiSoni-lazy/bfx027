@@ -1,0 +1,1 @@
+{"event": "playbook_on_start", "pid": 7270, "uuid": "3140ef18-ed3d-450f-9378-357150d1a4d6", "created": "2024-07-11T11:52:58.990616", "event_data": {"playbook": "install_receptor.yml", "playbook_uuid": "3140ef18-ed3d-450f-9378-357150d1a4d6", "uuid": "3140ef18-ed3d-450f-9378-357150d1a4d6"}}

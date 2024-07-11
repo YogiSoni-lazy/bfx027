@@ -25,7 +25,7 @@
       register: aap_status
       ignore_errors: yes
       until: "'Red Hat Ansible Automation Platform Upgrading' not in aap_status.content"
-      retries: 30
+      retries: 100
       delay: 60
     - name: Fail if AAP is not ready after retries
       fail:

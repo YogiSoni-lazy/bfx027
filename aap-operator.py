@@ -93,6 +93,7 @@ class AapOperator(BaseLab):
             returns=0,
             fatal=True,
         )
+        wait_cluster_step()
         create_manifest_step(self.mpath / "operator_install.yaml")
         run_command_step(
             "Check CRD for automationcontrollers.automationcontroller.ansible.com on  " + _workstation,

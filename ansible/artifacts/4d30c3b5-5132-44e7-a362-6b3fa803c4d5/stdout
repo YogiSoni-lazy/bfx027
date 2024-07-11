@@ -1,0 +1,37 @@
+[1;35m[WARNING]: Skipping callback plugin 'profile_tasks', unable to load[0m
+[1;35m[WARNING]: Skipping callback plugin 'timer', unable to load[0m
+
+PLAY [AAP Breakfix3] ***********************************************************
+
+TASK [Capture controller creds] ************************************************
+[0;33mchanged: [localhost][0m
+
+TASK [display] *****************************************************************
+[0;32mok: [localhost] => {[0m
+[0;32m    "msg": "rNpNmymSWHQlajcc4id0qw13Q7CygCa7"[0m
+[0;32m}[0m
+
+TASK [Set a fact based on password output] *************************************
+[0;32mok: [localhost][0m
+
+TASK [Check if AAP is ready] ***************************************************
+[1;30mFAILED - RETRYING: [localhost]: Check if AAP is ready (30 retries left).[0m
+[1;30mFAILED - RETRYING: [localhost]: Check if AAP is ready (29 retries left).[0m
+[1;30mFAILED - RETRYING: [localhost]: Check if AAP is ready (28 retries left).[0m
+[1;30mFAILED - RETRYING: [localhost]: Check if AAP is ready (27 retries left).[0m
+[1;30mFAILED - RETRYING: [localhost]: Check if AAP is ready (26 retries left).[0m
+[0;32mok: [localhost][0m
+
+TASK [Fail if AAP is not ready after retries] **********************************
+[0;36mskipping: [localhost][0m
+
+TASK [Pause for 3 minutes] *****************************************************
+Pausing for 180 seconds
+(ctrl+C then 'C' = continue early, ctrl+C then 'A' = abort)
+[0;32mok: [localhost][0m
+
+TASK [Create an instance on AAP Controller] ************************************
+[0;31mfatal: [localhost]: FAILED! => {"changed": false, "msg": "Failed to get token: <urlopen error TLS/SSL connection has been closed (EOF) (_ssl.c:992)>"}[0m
+
+PLAY RECAP *********************************************************************
+[0;31mlocalhost[0m                  : [0;32mok=5   [0m [0;33mchanged=1   [0m unreachable=0    [0;31mfailed=1   [0m [0;36mskipped=1   [0m rescued=0    ignored=0   
