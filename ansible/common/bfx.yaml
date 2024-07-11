@@ -34,7 +34,6 @@
     - name: Pause for 3 minutes
       pause:
         minutes: 3
-      prompt: "Waiting for AAP server....."
     - name: Create an instance on AAP Controller
       awx.awx.instance:
         controller_host: "{{ groups['controller'][0] }}"

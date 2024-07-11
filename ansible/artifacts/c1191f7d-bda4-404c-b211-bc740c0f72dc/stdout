@@ -1,0 +1,10 @@
+[0;31mERROR! conflicting action statements: pause, prompt[0m
+[0;31m[0m
+[0;31mThe error appears to be in '/home/student/venvs/bfx027/lib/python3.9/site-packages/bfx027/ansible/common/bfx.yaml': line 34, column 7, but may[0m
+[0;31mbe elsewhere in the file depending on the exact syntax problem.[0m
+[0;31m[0m
+[0;31mThe offending line appears to be:[0m
+[0;31m[0m
+[0;31m      when: "'Red Hat Ansible Automation Platform Upgrading' in aap_status.content"[0m
+[0;31m    - name: Pause for 3 minutes[0m
+[0;31m      ^ here[0m

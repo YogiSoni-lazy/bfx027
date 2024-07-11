@@ -1,0 +1,1 @@
+{"event": "verbose", "uuid": "4a4375e6-49a3-4d85-a5a5-2dfc80c7a027", "counter": 8, "stdout": "\u001b[0;31m      when: \"'Red Hat Ansible Automation Platform Upgrading' in aap_status.content\"\u001b[0m", "start_line": 7, "end_line": 8, "runner_ident": "c1191f7d-bda4-404c-b211-bc740c0f72dc", "created": "2024-07-11T10:08:26.991073"}

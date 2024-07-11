@@ -1,0 +1,1 @@
+{"event": "verbose", "uuid": "257bf924-bd7c-4bf4-9a92-5463b153fd4a", "counter": 9, "stdout": "\u001b[0;31m    - name: Pause for 3 minutes\u001b[0m", "start_line": 8, "end_line": 9, "runner_ident": "c1191f7d-bda4-404c-b211-bc740c0f72dc", "created": "2024-07-11T10:08:26.991222"}
