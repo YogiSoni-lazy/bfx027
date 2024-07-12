@@ -77,7 +77,7 @@ class AapOperator(BaseLab):
             delete_project_step(self.NameSpace)
 
         script_exec_cmd = "( cd "+ str(self.mpath) + " || exit; " + "bash pre2.sh password.txt )"
-        print(self.mpath)
+        #print(self.mpath)
         run_command_step(
             "Initiating set up on " + _workstation,
             script_exec_cmd,
@@ -119,9 +119,9 @@ class AapOperator(BaseLab):
             returns=0,
             fatal=True,
         )
-        #ansible.run_playbook_step(
-        #   self,
-        #   "common/bfx.yaml",
-        #   step_message="Preparing the exercise on " + _workstation,
-        #)
+        ansible.run_playbook_step(
+           self,
+           "common/bfx.yaml",
+           step_message="Preparing the exercise on " + _workstation,
+        )
 

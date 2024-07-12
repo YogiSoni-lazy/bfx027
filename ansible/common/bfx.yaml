@@ -23,8 +23,8 @@
         #body: "{{ login_payload }}"
         validate_certs: no
       register: result
-      retries: 30
-      delay: 5
+      retries: 100
+      delay: 60
       until: result.status == 200
     - name: display error
       debug:
@@ -38,7 +38,7 @@
       register: aap_status
       ignore_errors: yes
       until: "'Red Hat Ansible Automation Platform Upgrading' not in aap_status.content"
-      retries: 100
+      retries: 300
       delay: 60
     - name: Fail if AAP is not ready after retries
       fail:
@@ -51,8 +51,8 @@
         #body: "{{ login_payload }}"
         validate_certs: no
       register: result
-      retries: 30
-      delay: 5
+      retries: 100
+      delay: 60
       until: result.status == 200
     - name: display error
       debug:
@@ -71,7 +71,7 @@
       register: cont_status
       ignore_errors: yes
       until: cont_status.failed == false 
-      retries: 100
+      retries: 200
       delay: 60
       tags: test
     - name: Find execution node instance ID
