@@ -47,6 +47,8 @@ class AapOperator(BaseLab):
         controller_cred_cmd = "oc extract secrets/example-admin-password -n ansible-automation-platform --to=/tmp --confirm"
         controller_status = "while ! (oc get pods -n ansible-automation-platform | grep -i example | wc -l | grep 3); do oc get pods -n ansible-automation-platform | grep -i example; sleep 5; done"
         crd_status_cmd = "while ! (kubectl get crd automationcontrollers.automationcontroller.ansible.com) ; do kubectl get crd automationcontrollers.automationcontroller.ansible.com; sleep 5;  done;"
+        ansible_cmd = "( cd /home/student/venvs/bfx027/lib64/python3.9/site-packages/bfx027/ansible || exit; ansible-playbook common/bfx.yaml -i inventory )"
+        grade_cmd = "( cd /home/student/venvs/bfx027/lib64/python3.9/site-packages/bfx027/ansible || exit; ansible all -m ping -i inventory )"
 
         wait_cluster_step()
         run_command_step(
@@ -124,4 +126,20 @@ class AapOperator(BaseLab):
            "common/bfx.yaml",
            step_message="Preparing the exercise on " + _workstation,
         )
+        run_command_step(
+            "Breaking ansible controller "+ _controller,
+            ansible_cmd,
+            shell=True,
+            returns=0,
+            fatal=True,
+        )
 
+    def grade(self):
+        grade_cmd = "( cd /home/student/venvs/bfx027/lib64/python3.9/site-packages/bfx027/ansible || exit; ansible all -m ping -i inventory )"
+        run_command_step(
+            "Grading "+ _controller,
+            grade_cmd,
+            shell=True,
+            returns=0,
+            fatal=True,
+        )
